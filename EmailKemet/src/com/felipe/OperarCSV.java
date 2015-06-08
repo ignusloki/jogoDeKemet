@@ -9,18 +9,17 @@ import java.io.IOException;
 
 public class OperarCSV {
 
-	String csvFile = "D:\\Kemet\\DIs.csv";
 	BufferedReader br = null;
 	String line = "";
 	String cvsSplitBy = ",";
 
-	public String[] carregarCSV(String[] DIs) {
+	public String[] carregarCSV(String[] arrayDeRetorno, String caminhoDoArquivo) {
 
 		try {
 
-			br = new BufferedReader(new FileReader(csvFile));
+			br = new BufferedReader(new FileReader(caminhoDoArquivo));
 			line = br.readLine();
-			DIs = line.split(cvsSplitBy);
+			arrayDeRetorno = line.split(cvsSplitBy);
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -36,23 +35,26 @@ public class OperarCSV {
 			}
 		}
 
-		System.out.println("Done");
+		System.out.println("Dados carrgados com sucesso");
+
 		/*
-		 * for (int i = 0; i < DIs.length; i++) {
-		 * 
-		 * System.out.println(DIs[i]); }
+		 * for (int i = 0; i < arrayDeRetorno.length; i++) {
+		 * System.out.println(arrayDeRetorno[i]); }
 		 */
-		return DIs;
+
+		return arrayDeRetorno;
 	}
 
-	public void escreverNumCSV(int[] DIs) throws IOException {
+	public void escreverNumCSV(int[] DIs, String caminhoDoArquivo)
+			throws IOException {
 
-		FileWriter fw = new FileWriter(csvFile, true);
+		FileWriter fw = new FileWriter(caminhoDoArquivo, true);
 		BufferedWriter bw = new BufferedWriter(fw);
 
-		bw.write(String.valueOf("," + DIs[0]));
-		bw.write(String.valueOf("," + DIs[1]));
-		bw.write(String.valueOf("," + DIs[2]));
+		for (int i = 0; i < DIs.length; i++) {
+			// System.out.println(DIs[i] + " - para serem gravados no CSV");
+			bw.write(String.valueOf("," + DIs[i]));
+		}
 
 		bw.flush();
 		bw.close();

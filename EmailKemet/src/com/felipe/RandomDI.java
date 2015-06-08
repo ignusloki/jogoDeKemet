@@ -8,9 +8,10 @@ public class RandomDI {
 	static String[] historicoCSV;
 	static int[] numeros;
 
-	public static int[] gerarDI() {
+	public static int[] gerarDI(int numeroDIsParaGerar) {
 
-		int numeroDI[] = new int[3];
+		int numeroDI[] = new int[numeroDIsParaGerar];
+		boolean DIDuplicada = true;
 
 		// NOTE: Usually this should be a field rather than a method
 		// variable so that it is not re-seeded every call.
@@ -18,49 +19,59 @@ public class RandomDI {
 
 		// nextInt is normally exclusive of the top value,
 		// so add 1 to make it inclusive
-		numeroDI[0] = rand.nextInt((35 - 1) + 1) + 1;
-		numeroDI[1] = rand.nextInt((35 - 1) + 1) + 1;
 
-		while (numeroDI[0] == numeroDI[1]) {
-			numeroDI[1] = rand.nextInt((35 - 1) + 1) + 1;
+		while (DIDuplicada) {
+
+			for (int i = 0; i < numeroDI.length; i++) {
+				numeroDI[i] = rand.nextInt((35 - 1) + 1) + 1;
+			}
+
+			DIDuplicada = false;
+
+			for (int i = 0; i < numeroDI.length; i++) {
+
+				for (int k = 0; k < numeroDI.length; k++) {
+
+					if (numeroDI[k] == numeroDI[i] && i != k) {
+						DIDuplicada = true;
+						System.out.println("Duplicada achada - re-gerando");
+					}
+					;
+				}
+				;
+			}
+			;
 		}
 
-		numeroDI[2] = rand.nextInt((35 - 1) + 1) + 1;
-
-		while (numeroDI[0] == numeroDI[2] || numeroDI[1] == numeroDI[2]) {
-			numeroDI[2] = rand.nextInt((35 - 1) + 1) + 1;
-		}
-
-		// System.out.println(numeroDI[0] + " - " + numeroDI[1] + " - "
-		// + numeroDI[2]);
+		/*
+		 * for (int i = 0; i < numeroDI.length; i++) {
+		 * System.out.println(numeroDI[i] + " - gerada"); }
+		 */
 
 		return numeroDI;
 
 	}
 
-	public static int[] validarDI() throws IOException {
+	public static int[] validarDI(String[] historicoCSVDI,
+			int numeroDIsParaGerar) throws IOException {
 
-		int numeroDIs[] = new int[3];
+		int numeroDIs[] = new int[numeroDIsParaGerar];
 		boolean procurarDI = true;
 		boolean DIDuplicada = true;
-
-		// Carrega o csv na memoria
-		OperarCSV csv = new OperarCSV();
-		historicoCSV = csv.carregarCSV(historicoCSV);
 
 		while (procurarDI) {
 
 			// Gera os numeros
-			numeroDIs = gerarDI();
-			DIDuplicada = compareArrays(numeroDIs, historicoCSV);
+			numeroDIs = gerarDI(numeroDIsParaGerar);
+			DIDuplicada = compareArrays(numeroDIs, historicoCSVDI);
 
 			if (DIDuplicada) {
 				procurarDI = true;
 			} else {
 				procurarDI = false;
 			}
-
 		}
+
 		return numeroDIs;
 	}
 

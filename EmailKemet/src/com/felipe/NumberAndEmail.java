@@ -17,35 +17,44 @@ public class NumberAndEmail {
 	static Session getMailSession;
 	static MimeMessage generateMailMessage;
 	static String[] historicoCSV;
+	static String[] pessoas;
 	static int[] numeros;
+	static String csvKemetDI = "D:\\Kemet\\DIs.csv";
+	static String csvKemetPessoas = "D:\\Kemet\\Pessoas.csv";
 
 	public static void main(String args[]) throws AddressException,
 			MessagingException, IOException {
 
-		String[] pessoas = new String[3];
-		pessoas[0] = "lvillardi@gmail.com";
-		pessoas[1] = "fpontes@gmail.com";
-		pessoas[2] = "ignusloki@hotmail.com";
-
 		// Carrega o csv na memoria
 		OperarCSV csv = new OperarCSV();
-		csv.carregarCSV(historicoCSV);
+		pessoas = csv.carregarCSV(pessoas, csvKemetPessoas);
+		historicoCSV = csv.carregarCSV(historicoCSV, csvKemetDI);
+
+		// Conta quantas DIs devem gerar
+		int numeroDIsParaGerar = Integer.parseInt(pessoas[1])
+				+ Integer.parseInt(pessoas[3]) + Integer.parseInt(pessoas[5])
+				+ Integer.parseInt(pessoas[7]);
 
 		// Gera as DIs
 		RandomDI numbers = new RandomDI();
+		numeros = RandomDI.validarDI(historicoCSV, numeroDIsParaGerar);
 
-		numeros = new int[3];
-		numeros = RandomDI.validarDI();
+		/*
+		 * System.out.println(pessoas[0] + " para " + numeros[0]);
+		 * System.out.println(pessoas[2] + " para " + numeros[1]);
+		 * System.out.println(pessoas[4] + " para " + numeros[2]);
+		 * System.out.println(pessoas[6] + " para " + numeros[3]);
+		 */
 
 		generateAndSendEmail(pessoas[0], numeros[0]);
-		generateAndSendEmail(pessoas[1], numeros[1]);
-		generateAndSendEmail(pessoas[2], numeros[2]);
+		generateAndSendEmail(pessoas[2], numeros[1]);
+		generateAndSendEmail(pessoas[4], numeros[2]);
+		generateAndSendEmail(pessoas[6], numeros[3]);
 
 		System.out
 				.println("\n\n ===> Your Java Program has just sent an Email successfully. Check your email..");
 
-		OperarCSV file = new OperarCSV();
-		csv.escreverNumCSV(numeros);
+		csv.escreverNumCSV(numeros, csvKemetDI);
 	}
 
 	public static void generateAndSendEmail(String pessoa, int numero)
